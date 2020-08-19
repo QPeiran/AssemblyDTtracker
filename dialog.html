@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      function myFunction()
+        {
+          var breakname = document.getElementById("BreakSelection").value;
+          google.script.run.WriteInBreakName(breakname);
+          google.script.host.close();
+        }
+      window.closeDia = function()
+        {
+          google.script.host.close();
+        };
+    </script>
+
+    <style>
+      .confirm
+        {
+          text-align: center;
+          padding: 10px 15px;
+          background-color: #6bef7c;
+          font-size: 20px;
+          font-weight: bold;
+          width:120px;
+          height:50px;
+        }
+      .close
+        {
+          text-align: center;
+          padding: 10px 15px;
+          background-color: pink;
+          font-size: 20px;
+          font-weight: bold;
+          width:120px;
+          height:50px;
+        }
+      .background
+        {
+          font-size: 13px;
+          padding: 10px 8px 10px 14px;
+          background: #000;
+          border: 5px solid green;
+          border-radius: 6px;
+          position: relative;
+        }
+      .select
+        {
+          font-size: 20px;
+          width:400px;
+        }
+    </style>
+  </head>
+
+
+  <body>
+      <div class="background">
+        <select id="BreakSelection" class = "select">
+          <option value="10 mins Break">10 mins Break</option>
+          <option value="30 mins Break">30 mins Break</option>
+          <option value="2P/4P Change Over">2P/4P Change Over</option>
+          <option value="P2L/Batch Mode Change Over">P2L/Batch Mode Change Over</option>
+          <option value="Missing Assembly Ingredient">Missing Assembly Ingredient</option>
+          <option value="Missing Meal-kits">Missing Meal-kits</option>
+          <option value="Shortage of Staff">Shortage of Staff</option>
+          <option value="Clean Up">Clean Up</option>
+          <option value="Pick Light System Down">P2L System Down</option>
+          <option value="Change Tape">Change Tape</option>
+          <option value="Tape Machine Down">Tape Machine Down</option>
+          <option value="In-line Scale Machine Down">In-line Scale Machine Down</option>
+          <option value="Box Label Issue">Box Label Issue</option>
+          <option value="Rework">Rework</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    <hr/>
+
+    <ul>
+      <h3> Instructions:
+      <li>Select the reason for your break.</li>
+      <li>Select "Others" if the reason is not included.</li>
+      </h3>
+
+    </ul>
+
+    <button onclick="myFunction()" class="confirm">Confirm</button>
+
+  </body>
+</html>
