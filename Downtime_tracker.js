@@ -6,13 +6,14 @@ var status_cell = sheet1.getRange(2, 2);
 var timezone = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone();
 var timestamp_Time = "HH:mm:ss"; 
 var timestamp_Date = "yyyy-MM-dd";
-var TimeStamp = Utilities.formatDate(new Date(), timezone, timestamp_Time);
-var DateStamp = Utilities.formatDate(new Date(), timezone, timestamp_Date);
+var now = new Date()
+var TimeStamp = Utilities.formatDate(now, timezone, timestamp_Time);
+var DateStamp = Utilities.formatDate(now, timezone, timestamp_Date);
 
 var sheet2 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("AS Back");
 var last_row = sheet2.getLastRow();
 var cell1 = sheet2.getRange(last_row + 1, 1), cell2 = sheet2.getRange(last_row + 1, 2), cell3 = sheet2.getRange(last_row + 1, 3), cell4 = sheet2.getRange(last_row, 4);
-
+var cell5 = sheet2.getRange(last_row + 1, 5), cell6 = sheet2.getRange(last_row + 1, 6)
 
 function BreakStart() 
  {
@@ -28,11 +29,14 @@ function BreakStart()
 function BreakEnd()
  {
     SpreadsheetApp.getUi().alert('Break End');
+    var last_time = sheet2.getRange(last_row, 2).getDisplayValue();
     if (validation("Break End")){
         cell1.setValue(DateStamp);
         cell2.setValue(TimeStamp);
         cell3.setValue('Break End'); 
         status_cell.setValue('Working');
+        var time_diff = calculate_breaktime(last_time);
+        cell5.setValue(time_diff);
         showDialog();
     }
  }
@@ -110,8 +114,10 @@ function validation(stampsname)
   }
 }
 
-function calculate_breaktime()
+function calculate_breaktime(previous_time)
 {
+   var time_diff = (now.getHours() - Number(previous_time.slice(0,2))) * 60 + (now.getMinutes() - Number(previous_time.slice(0,2)));
+   return time_diff;
 }
 
 function calculate_shifttime()
