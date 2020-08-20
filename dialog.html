@@ -2,6 +2,11 @@
 <html>
   <head>
     <script>
+      function addUnselected()
+        {
+          //console.log("unsel");
+          google.script.run.WriteInBreakName("Unselected");
+        }
       function myFunction()
         {
           var breakname = document.getElementById("BreakSelection").value;
@@ -12,6 +17,7 @@
         {
           google.script.host.close();
         };
+      window.addEventListener("beforeunload", addUnselected());
     </script>
 
     <style>
