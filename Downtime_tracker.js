@@ -60,6 +60,8 @@ function ProductionFinish()
      cell2.setValue(TimeStamp);
      cell3.setValue('Production Finish'); 
      status_cell.setValue('Production Finish');
+     var shift_time = calculate_shifttime();
+     cell6.setValue(shift_time);
     }
  }
 
@@ -116,10 +118,18 @@ function validation(stampsname)
 
 function calculate_breaktime(previous_time)
 {
-   var time_diff = (now.getHours() - Number(previous_time.slice(0,2))) * 60 + (now.getMinutes() - Number(previous_time.slice(0,2)));
+   var time_diff = (now.getHours() - Number(previous_time.slice(0,2))) * 60 + (now.getMinutes() - Number(previous_time.slice(3,5)));
    return time_diff;
 }
 
 function calculate_shifttime()
 {
+  var i = 0;
+  while ((i < last_row) && (sheet2.getRange(last_row - i, 3).getDisplayValue() != "Production Start")){
+    //var display_value = sheet2.getRange(last_row - i, 3).getDisplayValue();
+    i++;
+  }
+  var shift_start = sheet2.getRange(last_row - i, 2).getDisplayValue();
+  var shift_time = (now.getHours() - Number(shift_start.slice(0,2))) * 60 + (now.getMinutes() - Number(shift_start.slice(3,5)));
+  return shift_time;
 }
