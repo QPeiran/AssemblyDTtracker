@@ -1,7 +1,8 @@
+//Version 0.2 Aug.20 Peiran
 var sheet1 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("AS Front");
 //var time_cell = sheet1.getRange(1, 2);
 var status_cell = sheet1.getRange(2, 2);
-
+var ui = SpreadsheetApp.getUi();
 
 var timezone = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone();
 var timestamp_Time = "HH:mm:ss"; 
@@ -16,54 +17,63 @@ var cell1 = sheet2.getRange(last_row + 1, 1), cell2 = sheet2.getRange(last_row +
 var cell5 = sheet2.getRange(last_row + 1, 5), cell6 = sheet2.getRange(last_row + 1, 6)
 
 function BreakStart() 
- {
-    SpreadsheetApp.getUi().alert('Break Start');
-    if (validation("Break Start")){    
-    cell1.setValue(DateStamp);
-    cell2.setValue(TimeStamp);
-    cell3.setValue('Break Start');
-    status_cell.setValue('On Break');
+  {
+    var response = ui.alert('Break Start?', ui.ButtonSet.OK);
+    if (response == ui.Button.OK){
+        if (validation("Break Start")){    
+            cell1.setValue(DateStamp);
+            cell2.setValue(TimeStamp);
+            cell3.setValue('Break Start');
+            status_cell.setValue('On Break');
+        }
     }
- }
+  }
 
 function BreakEnd()
- {
-    SpreadsheetApp.getUi().alert('Break End');
-    var last_time = sheet2.getRange(last_row, 2).getDisplayValue();
-    if (validation("Break End")){
-        cell1.setValue(DateStamp);
-        cell2.setValue(TimeStamp);
-        cell3.setValue('Break End'); 
-        status_cell.setValue('Working');
-        var time_diff = calculate_breaktime(last_time);
-        cell5.setValue(time_diff);
-        showDialog();
+  {
+    var response = ui.alert('Break End?', ui.ButtonSet.OK);
+    if (response == ui.Button.OK){
+        var last_time = sheet2.getRange(last_row, 2).getDisplayValue();
+        if (validation("Break End")){
+            cell1.setValue(DateStamp);
+            cell2.setValue(TimeStamp);
+            cell3.setValue('Break End'); 
+            status_cell.setValue('Working');
+            var time_diff = calculate_breaktime(last_time);
+            cell5.setValue(time_diff);
+            showDialog();
+        }
     }
- }
+  }
 
 function ProductionStart()
- {
-   SpreadsheetApp.getUi().alert('Production Start');
-   if (validation("Production Start")){
-    cell1.setValue(DateStamp);
-    cell2.setValue(TimeStamp);
-    cell3.setValue('Production Start'); 
-    status_cell.setValue('Working');
+  {
+    var response = ui.alert('Production Start?', ui.ButtonSet.OK);
+    if (response == ui.Button.OK){
+        if (validation("Production Start")){
+            cell1.setValue(DateStamp);
+            cell2.setValue(TimeStamp);
+            cell3.setValue('Production Start'); 
+            status_cell.setValue('Working');
+        }
     }
- }
+  }
+
 
 function ProductionFinish()
- {
-    SpreadsheetApp.getUi().alert('Production Finish');
-    if (validation("Production Finish")){
-     cell1.setValue(DateStamp);
-     cell2.setValue(TimeStamp);
-     cell3.setValue('Production Finish'); 
-     status_cell.setValue('Production Finish');
-     var shift_time = calculate_shifttime();
-     cell6.setValue(shift_time);
+  {
+    var response = ui.alert('Production Finish?', ui.ButtonSet.OK);
+    if (response == ui.Button.OK){
+        if (validation("Production Finish")){
+            cell1.setValue(DateStamp);
+            cell2.setValue(TimeStamp);
+            cell3.setValue('Production Finish'); 
+            status_cell.setValue('Production Finish');
+            var shift_time = calculate_shifttime();
+            cell6.setValue(shift_time);
+        }
     }
- }
+  }
 
 function showDialog()
  {
