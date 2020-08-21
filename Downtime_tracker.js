@@ -143,3 +143,10 @@ function calculate_shifttime()
   var shift_time = (now.getHours() - Number(shift_start.slice(0,2))) * 60 + (now.getMinutes() - Number(shift_start.slice(3,5)));
   return shift_time;
 }
+
+function push_to_SR()
+{
+  var dest_rep = ""
+  //TODO
+  
+}
