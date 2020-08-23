@@ -71,6 +71,7 @@ function ProductionFinish()
             status_cell.setValue('Production Finish');
             var shift_time = calculate_shifttime();
             cell6.setValue(shift_time);
+            push_to_SR();
         }
     }
   }
@@ -146,7 +147,9 @@ function calculate_shifttime()
 
 function push_to_SR()
 {
-  var dest_rep = ""
+  var dest_ID = "1HV-BzJpVv9xtEmDEKhgo5F9Uih_osLMpsFIS0psEc_k";
+  var dest_sheet = SpreadsheetApp.openById(dest_ID);
+  
   //TODO
   
 }
