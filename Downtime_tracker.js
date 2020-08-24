@@ -150,9 +150,25 @@ function push_to_SR(start_index)
 {
   var dest_ID = "1HV-BzJpVv9xtEmDEKhgo5F9Uih_osLMpsFIS0psEc_k";
   var dest_sheet = SpreadsheetApp.openById(dest_ID).getSheetByName("Down Time Tracker Data (AS2)");
-  var source_range = sheet2.getRange(start_index, 1, (last_row - start_index), 7);
-  var source_values = source_range.getValues();
-  var target_range = dest_sheet.getRange(dest_sheet.getLastRow() + 1, 1, (last_row - start_index), 7);
+  var source_range = sheet2.getRange(start_index, 1, (last_row - start_index + 2), 7);
+  var source_values = source_range.getDisplayValues();
+  var target_range = dest_sheet.getRange(dest_sheet.getLastRow() + 1, 1, (last_row - start_index + 2), 7);
   target_range.setValues(source_values);
   //Summarize Timecost by reasons
+}
+
+function clear_backend()
+{
+  //TODO
+}
+
+function SummarizeData()
+{
+  var pivot_table = SpreadsheetApp.getActive().getSheetByName("Pivot Table");
+  var index, reason;
+  for(index = 3; index < pivot_table.getLastRow(); index++)
+  {
+    reason = pivot_table.getRange(index, 1).getValue();
+    Logger.log(reason);
+  }
 }
