@@ -16,6 +16,8 @@ var last_row = sheet2.getLastRow();
 var cell1 = sheet2.getRange(last_row + 1, 1), cell2 = sheet2.getRange(last_row + 1, 2), cell3 = sheet2.getRange(last_row + 1, 3), cell4 = sheet2.getRange(last_row, 4);
 var cell5 = sheet2.getRange(last_row + 1, 5), cell6 = sheet2.getRange(last_row + 1, 6)
 
+var dest_ID = "1HV-BzJpVv9xtEmDEKhgo5F9Uih_osLMpsFIS0psEc_k";
+
 function BreakStart() 
   {
     var response = ui.alert('Break Start?', ui.ButtonSet.OK);
@@ -70,9 +72,12 @@ function ProductionFinish()
             cell2.setValue(TimeStamp);
             cell3.setValue('Production Finish'); 
             status_cell.setValue('Production Finish');
-            var start_index = calculate_shifttime();
-            Logger.log(start_index);
+            var shift_time = calculate_shifttime()[0];
+            var start_index = calculate_shifttime()[1];
+            cell6.setValue(shift_time);
+            // Logger.log(start_index);
             push_to_SR(start_index);
+            SummarizeData(shift_time);
         }
     }
   }
@@ -80,13 +85,13 @@ function ProductionFinish()
 function showBreakReasonsDialog()
  {
   var uiDialog = HtmlService.createHtmlOutputFromFile('break_reasons_dialog').setSandboxMode(HtmlService.SandboxMode.NATIVE);
-  return SpreadsheetApp.getUi().showModalDialog(uiDialog,"Choose the break reason");
+  return ui.showModalDialog(uiDialog,"Choose the break reason");
  }
 
  function showLateFromStartDialog()
  {
   var uiDialog = HtmlService.createHtmlOutputFromFile('late_from_start_dialog').setSandboxMode(HtmlService.SandboxMode.NATIVE);
-  return SpreadsheetApp.getUi().showModalDialog(uiDialog,"Choose the lateness");
+  return ui.showModalDialog(uiDialog,"Choose the lateness");
  }
 
 function WriteInLateness(lateness)
@@ -110,34 +115,34 @@ function validation(stampsname)
   {
     case "Production Start":
       if (previous_cell.getValue() != "Production Finish" && previous_cell.getValue() != "Stamp"){
-        SpreadsheetApp.getUi().alert('Finish Shift First!');
+        ui.alert('Finish Shift First!');
         return false;
       } else {return true;}
       
     case "Production Finish":
       if (previous_cell.getValue() == "Break Start") {
-        SpreadsheetApp.getUi().alert('End Break First!');
+        ui.alert('End Break First!');
         return false;
         } else if (previous_cell.getValue() == "Production Finish") {
-            SpreadsheetApp.getUi().alert('Already Finished!');
+            ui.alert('Already Finished!');
             return false;
         } else {return true;}
     
     case "Break Start":
       if (previous_cell.getValue() == "Break Start") {
-          SpreadsheetApp.getUi().alert('You are already on a Break!');
+          ui.alert('You are already on a Break!');
           return false;
         } else if (previous_cell.getValue() == "Production Finish"){
-          SpreadsheetApp.getUi().alert('You have not Start Production yet!');
+          ui.alert('You have not Start Production yet!');
           return false;
         } else {return true;}
     case "Break End":
         if (previous_cell.getValue() != "Break Start") {
-          SpreadsheetApp.getUi().alert('You are not on a Break!');
+          ui.alert('You are not on a Break!');
           return false;
         } else {return true;}
     default:
-      SpreadsheetApp.getUi().alert('Error: contact Peiran!');
+      ui.alert('Error: contact Peiran!');
   }
 }
 
@@ -156,13 +161,11 @@ function calculate_shifttime()
   }
   var shift_start = sheet2.getRange(last_row - i, 2).getDisplayValue();
   var shift_time = (now.getHours() - Number(shift_start.slice(0,2))) * 60 + (now.getMinutes() - Number(shift_start.slice(3,5)));
-  cell6.setValue(shift_time);
-  return (last_row - i);
+  return [shift_time, (last_row - i)];
 }
 
 function push_to_SR(start_index)
 {
-  var dest_ID = "1HV-BzJpVv9xtEmDEKhgo5F9Uih_osLMpsFIS0psEc_k";
   var dest_sheet = SpreadsheetApp.openById(dest_ID).getSheetByName("Down Time Tracker Data (AS2)");
   var source_range = sheet2.getRange(start_index, 1, (last_row - start_index + 2), 7);
   var source_values = source_range.getDisplayValues();
@@ -176,13 +179,59 @@ function clear_backend()
   //TODO
 }
 
-function SummarizeData()
+function SummarizeData(shift_time)
 {
   var pivot_table = SpreadsheetApp.getActive().getSheetByName("Pivot Table");
-  var index, reason;
+  var dest_sheet_summary = SpreadsheetApp.openById(dest_ID).getSheetByName("Submission Sheet");
+  var index, reason, dest_range;
   for(index = 3; index < pivot_table.getLastRow(); index++)
   {
     reason = pivot_table.getRange(index, 1).getValue();
-    Logger.log(reason);
+    switch (reason) 
+    {
+      case "Late From Start":
+        dest_range = dest_sheet_summary.getRange(18,3);
+        break;
+      case "2P/4P Changeover":
+        dest_range = dest_sheet_summary.getRange(20,3);
+        break;
+      case "Missing Assembly Ingredient":
+        dest_range = dest_sheet_summary.getRange(21,3);
+        break;
+      case "Missing Meal-kits":
+        dest_range = dest_sheet_summary.getRange(22,3);
+        break;
+      case "Tape Machine Down":
+        dest_range = dest_sheet_summary.getRange(23,3);
+        break;         
+      case "Change Tape":
+        dest_range = dest_sheet_summary.getRange(24,3);
+        break;
+      case "Rework":
+        dest_range = dest_sheet_summary.getRange(25,3);
+        break;
+      case "Other":
+        dest_range = dest_sheet_summary.getRange(26,3);
+        break; 
+      case "10 mins Break":
+        var ten_mins_count = pivot_table.getRange(index,2).getValue();
+        var ten_mins_total = pivot_table.getRange(index,3).getValue();
+        var ten_mins_lateness = ten_mins_total - ten_mins_count * 10;
+        break;
+      case "30 mins Break":
+        var thirty_mins_count = pivot_table.getRange(index,2).getValue();
+        var thirty_mins_total = pivot_table.getRange(index,3).getValue();
+        var thirty_mins_lateness = thirty_mins_total - thirty_mins_count * 30;
+        break;
+      case "Move to Kitting Line":
+        //do nothing
+        break;
+      default:
+        ui.alert('Error: contact Peiran!');
+    };
+    var total_lateness = ten_mins_lateness + thirty_mins_lateness;
+    dest_sheet_summary.getRange(12,2).setValue(shift_time);
+    dest_range.setValue(pivot_table.getRange(index,3).getValue());
   }
+  dest_sheet_summary.getRange(19,3).setValue(total_lateness);
 }
