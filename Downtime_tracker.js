@@ -41,7 +41,7 @@ function BreakEnd()
             status_cell.setValue('Working');
             var time_diff = calculate_breaktime(last_time);
             cell5.setValue(time_diff);
-            showDialog();
+            showBreakReasonsDialog();
         }
     }
   }
@@ -55,6 +55,7 @@ function ProductionStart()
             cell2.setValue(TimeStamp);
             cell3.setValue('Production Start'); 
             status_cell.setValue('Working');
+            showLateFromStartDialog();
         }
     }
   }
@@ -76,11 +77,24 @@ function ProductionFinish()
     }
   }
 
-function showDialog()
+function showBreakReasonsDialog()
  {
-  var uiDialog = HtmlService.createHtmlOutputFromFile('ASBreakReasons').setSandboxMode(HtmlService.SandboxMode.NATIVE);
+  var uiDialog = HtmlService.createHtmlOutputFromFile('break_reasons_dialog').setSandboxMode(HtmlService.SandboxMode.NATIVE);
   return SpreadsheetApp.getUi().showModalDialog(uiDialog,"Choose the break reason");
  }
+
+ function showLateFromStartDialog()
+ {
+  var uiDialog = HtmlService.createHtmlOutputFromFile('late_from_start_dialog').setSandboxMode(HtmlService.SandboxMode.NATIVE);
+  return SpreadsheetApp.getUi().showModalDialog(uiDialog,"Choose the lateness");
+ }
+
+function WriteInLateness(lateness)
+{
+  cell4.setValue("Late From Start");
+  var cell_lateness = sheet2.getRange(last_row, 5);
+  cell_lateness.setValue(lateness);
+}
 
 function WriteInBreakName(breakname)
 {
