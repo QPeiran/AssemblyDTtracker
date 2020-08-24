@@ -17,4 +17,7 @@ function submit()
   } 
   else 
   {ui.alert('Not Submitted!');}
+
+  // TODO: submit via email
+  //
 }

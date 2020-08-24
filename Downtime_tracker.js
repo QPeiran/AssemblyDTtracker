@@ -69,9 +69,9 @@ function ProductionFinish()
             cell2.setValue(TimeStamp);
             cell3.setValue('Production Finish'); 
             status_cell.setValue('Production Finish');
-            var shift_time = calculate_shifttime();
-            cell6.setValue(shift_time);
-            push_to_SR();
+            var start_index = calculate_shifttime();
+            Logger.log(start_index);
+            push_to_SR(start_index);
         }
     }
   }
@@ -142,14 +142,17 @@ function calculate_shifttime()
   }
   var shift_start = sheet2.getRange(last_row - i, 2).getDisplayValue();
   var shift_time = (now.getHours() - Number(shift_start.slice(0,2))) * 60 + (now.getMinutes() - Number(shift_start.slice(3,5)));
-  return shift_time;
+  cell6.setValue(shift_time);
+  return (last_row - i);
 }
 
-function push_to_SR()
+function push_to_SR(start_index)
 {
   var dest_ID = "1HV-BzJpVv9xtEmDEKhgo5F9Uih_osLMpsFIS0psEc_k";
-  var dest_sheet = SpreadsheetApp.openById(dest_ID);
-  
-  //TODO
-  
+  var dest_sheet = SpreadsheetApp.openById(dest_ID).getSheetByName("Down Time Tracker Data (AS2)");
+  var source_range = sheet2.getRange(start_index, 1, (last_row - start_index), 7);
+  var source_values = source_range.getValues();
+  var target_range = dest_sheet.getRange(dest_sheet.getLastRow() + 1, 1, (last_row - start_index), 7);
+  target_range.setValues(source_values);
+  //Summarize Timecost by reasons
 }
