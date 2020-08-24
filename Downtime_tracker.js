@@ -78,6 +78,7 @@ function ProductionFinish()
             // Logger.log(start_index);
             push_to_SR(start_index);
             SummarizeData(shift_time);
+            clear_backend();
         }
     }
   }
@@ -176,7 +177,7 @@ function push_to_SR(start_index)
 
 function clear_backend()
 {
-  //TODO
+  sheet2.getRange(2,1,last_row,6).clearContent();
 }
 
 function SummarizeData(shift_time)
@@ -191,27 +192,35 @@ function SummarizeData(shift_time)
     {
       case "Late From Start":
         dest_range = dest_sheet_summary.getRange(18,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;
       case "2P/4P Changeover":
         dest_range = dest_sheet_summary.getRange(20,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;
       case "Missing Assembly Ingredient":
         dest_range = dest_sheet_summary.getRange(21,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;
       case "Missing Meal-kits":
         dest_range = dest_sheet_summary.getRange(22,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;
       case "Tape Machine Down":
         dest_range = dest_sheet_summary.getRange(23,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;         
       case "Change Tape":
         dest_range = dest_sheet_summary.getRange(24,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;
       case "Rework":
         dest_range = dest_sheet_summary.getRange(25,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;
       case "Other":
         dest_range = dest_sheet_summary.getRange(26,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break; 
       case "10 mins Break":
         var ten_mins_count = pivot_table.getRange(index,2).getValue();
@@ -230,8 +239,7 @@ function SummarizeData(shift_time)
         ui.alert('Error: contact Peiran!');
     };
     var total_lateness = ten_mins_lateness + thirty_mins_lateness;
-    dest_sheet_summary.getRange(12,2).setValue(shift_time);
-    dest_range.setValue(pivot_table.getRange(index,3).getValue());
   }
+  dest_sheet_summary.getRange(12,3).setValue(shift_time);
   dest_sheet_summary.getRange(19,3).setValue(total_lateness);
 }
