@@ -1,4 +1,6 @@
-//Version 0.2 Aug.20 Peiran
+//Version 0.2 Aug.25 Peiran
+//for assembly line 2
+
 var sheet1 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("AS Front");
 //var time_cell = sheet1.getRange(1, 2);
 var status_cell = sheet1.getRange(2, 2);
