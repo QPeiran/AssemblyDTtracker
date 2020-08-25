@@ -156,12 +156,34 @@ function calculate_breaktime(previous_time)
 function calculate_shifttime()
 {
   var i = 0;
-  while ((i < last_row) && (sheet2.getRange(last_row - i, 3).getDisplayValue() != "Production Start")){
-    //var display_value = sheet2.getRange(last_row - i, 3).getDisplayValue();
+  var stamp = "NULL";
+  var break_reason = "NULL";
+  var exclude_time = 0;
+  var idle_time = 0;
+  while ((i < last_row) && (stamp != "Production Start")){
+    stamp = sheet2.getRange(last_row - i, 3).getDisplayValue();
+    break_reason = sheet2.getRange(last_row - i, 4).getDisplayValue();
+    //take out "Move to Kitting Line" & "10/30 mins breaks"
+    switch (break_reason)
+    {
+      case "10 mins Break":
+        exclude_time += 10;
+        break;
+      case "30 mins Break":
+        exclude_time += 30;
+        break;
+      case "Move to Kitting Line":
+        idle_time = sheet2.getRange(last_row - i, 5).getValue();
+        exclude_time += idle_time;
+        break;
+      default:
+        exclude_time += 0;
+    }
     i++;
   }
   var shift_start = sheet2.getRange(last_row - i, 2).getDisplayValue();
-  var shift_time = (now.getHours() - Number(shift_start.slice(0,2))) * 60 + (now.getMinutes() - Number(shift_start.slice(3,5)));
+  var grand_shift_time = (now.getHours() - Number(shift_start.slice(0,2))) * 60 + (now.getMinutes() - Number(shift_start.slice(3,5)));
+  var shift_time = grand_shift_time - exclude_time;
   return [shift_time, (last_row - i)];
 }
 
