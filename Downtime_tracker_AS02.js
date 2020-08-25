@@ -264,6 +264,12 @@ function SummarizeData(shift_time)
       default:
         ui.alert('Break Reasons Error: contact Peiran!');
     };
+    if (isNaN(ten_mins_lateness)){
+      ten_mins_lateness = 0;
+    }
+    if (isNaN(thirty_mins_lateness)){
+      thirty_mins_lateness = 0;
+    } 
     var total_lateness = ten_mins_lateness + thirty_mins_lateness;
   }
   dest_sheet_summary.getRange(12,3).setValue(shift_time);

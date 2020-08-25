@@ -256,7 +256,7 @@ function SummarizeData(shift_time)
       case "30 mins Break":
         var thirty_mins_count = pivot_table.getRange(index,2).getValue();
         var thirty_mins_total = pivot_table.getRange(index,3).getValue();
-        var thirty_mins_lateness = thirty_mins_total - thirty_mins_count * 30;
+        var thirty_mins_lateness = thirty_mins_total - thirty_mins_count * 30;       
         break;
       case "Move to Kitting Line":
         //do nothing
@@ -264,6 +264,12 @@ function SummarizeData(shift_time)
       default:
         ui.alert('Break Reasons Error: contact Peiran!');
     };
+    if (isNaN(ten_mins_lateness)){
+      ten_mins_lateness = 0;
+    }
+    if (isNaN(thirty_mins_lateness)){
+      thirty_mins_lateness = 0;
+    } 
     var total_lateness = ten_mins_lateness + thirty_mins_lateness;
   }
   dest_sheet_summary.getRange(12,2).setValue(shift_time);
