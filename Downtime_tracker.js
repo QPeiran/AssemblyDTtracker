@@ -143,7 +143,7 @@ function validation(stampsname)
           return false;
         } else {return true;}
     default:
-      ui.alert('Error: contact Peiran!');
+      ui.alert('Stamps Name Error: contact Peiran!');
   }
 }
 
@@ -163,12 +163,9 @@ function calculate_shifttime()
   while ((i < last_row) && (stamp != "Production Start")){
     stamp = sheet2.getRange(last_row - i, 3).getDisplayValue();
     break_reason = sheet2.getRange(last_row - i, 4).getDisplayValue();
-    //take out "Move to Kitting Line" & "10/30 mins breaks"
+    //take out "Move to Kitting Line" & "30 mins breaks"
     switch (break_reason)
     {
-      case "10 mins Break":
-        exclude_time += 10;
-        break;
       case "30 mins Break":
         exclude_time += 30;
         break;
@@ -181,10 +178,11 @@ function calculate_shifttime()
     }
     i++;
   }
-  var shift_start = sheet2.getRange(last_row - i, 2).getDisplayValue();
-  var grand_shift_time = (now.getHours() - Number(shift_start.slice(0,2))) * 60 + (now.getMinutes() - Number(shift_start.slice(3,5)));
+  var shift_start = sheet2.getRange(last_row - i + 1, 2).getDisplayValue();
+  var LATENESS = sheet2.getRange(last_row - i + 1, 5).getValue();
+  var grand_shift_time = LATENESS + (now.getHours() - Number(shift_start.slice(0,2))) * 60 + (now.getMinutes() - Number(shift_start.slice(3,5)));
   var shift_time = grand_shift_time - exclude_time;
-  return [shift_time, (last_row - i)];
+  return [shift_time, (last_row - i + 1)];
 }
 
 function push_to_SR(start_index)
@@ -236,12 +234,16 @@ function SummarizeData(shift_time)
         dest_range = dest_sheet_summary.getRange(24,3);
         dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;
-      case "Rework":
+      case "P2L System Issues":
         dest_range = dest_sheet_summary.getRange(25,3);
         dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break;
-      case "Other":
+      case "Rework":
         dest_range = dest_sheet_summary.getRange(26,3);
+        dest_range.setValue(pivot_table.getRange(index,3).getValue());
+        break;
+      case "Other":
+        dest_range = dest_sheet_summary.getRange(27,3);
         dest_range.setValue(pivot_table.getRange(index,3).getValue());
         break; 
       case "10 mins Break":
@@ -258,7 +260,7 @@ function SummarizeData(shift_time)
         //do nothing
         break;
       default:
-        ui.alert('Error: contact Peiran!');
+        ui.alert('Break Reasons Error: contact Peiran!');
     };
     var total_lateness = ten_mins_lateness + thirty_mins_lateness;
   }
