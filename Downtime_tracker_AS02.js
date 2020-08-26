@@ -117,7 +117,7 @@ function validation(stampsname)
   switch (stampsname)
   {
     case "Production Start":
-      if (previous_cell.getValue() != "Production Finish" && previous_cell.getValue() != "Stamp"){
+      if (previous_cell.getValue() != "Stamp"){
         ui.alert('Finish Shift First!');
         return false;
       } else {return true;}
@@ -126,7 +126,7 @@ function validation(stampsname)
       if (previous_cell.getValue() == "Break Start") {
         ui.alert('End Break First!');
         return false;
-        } else if (previous_cell.getValue() == "Production Finish") {
+        } else if (previous_cell.getValue() == "Stamp") {
             ui.alert('Already Finished!');
             return false;
         } else {return true;}
@@ -135,7 +135,7 @@ function validation(stampsname)
       if (previous_cell.getValue() == "Break Start") {
           ui.alert('You are already on a Break!');
           return false;
-        } else if (previous_cell.getValue() == "Production Finish"){
+        } else if (previous_cell.getValue() == "Stamp"){
           ui.alert('You have not Start Production yet!');
           return false;
         } else {return true;}
